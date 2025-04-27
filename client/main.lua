@@ -279,6 +279,10 @@ function CancelActiveBounty()
             DeleteEntity(targetPed)
         end
         
+        -- Trigger the server event to properly clean up the server-side state
+        TriggerServerEvent('nrp-bounterhunter_enhanced:server:CancelBounty')
+        
+        -- Local cleanup
         activeBounty = nil
         QBCore.Functions.Notify("You've canceled your active bounty.", "info")
         
@@ -300,9 +304,10 @@ function CancelActiveBounty()
 end
 
 -- Still keep the command as a backup option
-RegisterCommand('cancelbounty', function()
+RegisterNUICallback('cancelBounty', function(data, cb)
     CancelActiveBounty()
-end, false)
+    cb('ok')
+end)
 
 -- Initialize NUI
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()

@@ -239,6 +239,35 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats', function()
     TriggerClientEvent('nrp-bounterhunter_enhanced:client:UpdatePlayerStats', src, statsData, badgesData)
 end)
 
+-- Cancel bounty
+RegisterNetEvent('nrp-bounterhunter_enhanced:server:CancelBounty', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    
+    if not Player then return end
+    
+    -- Find and remove the bounty assigned to this player
+    local bountyToRemove = nil
+    local bountyId = nil
+    
+    for id, bounty in pairs(activeBounties) do
+        if bounty.playerId == src then
+            bountyToRemove = bounty
+            bountyId = id
+            break
+        end
+    end
+    
+    if bountyToRemove then
+        -- Remove from active bounties
+        activeBounties[bountyId] = nil
+        TriggerClientEvent('QBCore:Notify', src, "Your bounty has been canceled.", "info")
+        TriggerClientEvent('nrp-bounterhunter_enhanced:client:BountyFinished', src)
+    else
+        TriggerClientEvent('QBCore:Notify', src, "You don't have an active bounty to cancel.", "error")
+    end
+end)
+
 -- Get available bounties
 RegisterNetEvent('nrp-bounterhunter_enhanced:server:GetAvailableBounties', function()
     local src = source
