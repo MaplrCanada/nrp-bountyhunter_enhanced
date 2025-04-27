@@ -253,26 +253,64 @@
             text-align: center;
             color: white;
             border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .badge:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #333;
+        }
+
+        .badge.unlocked:before {
+            background-color: #c81e1e;
+        }
+
         .badge-icon {
             font-size: 32px;
             margin-bottom: 10px;
             color: #888;
+            transition: color 0.3s;
         }
-        
+
         .badge.unlocked .badge-icon {
             color: #c81e1e;
         }
-        
+
         .badge-title {
             font-weight: 500;
             margin-bottom: 5px;
         }
-        
+
         .badge-description {
             font-size: 12px;
             color: #a0a0a0;
+        }
+
+        .badge-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .badge.unlocked .badge-status {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .badge:not(.unlocked) .badge-status {
+            background-color: #555;
+            color: #aaa;
         }
         
         .active-bounty {
@@ -627,6 +665,7 @@
                     <div class="badge-icon">${badge.icon}</div>
                     <div class="badge-title">${badge.title}</div>
                     <div class="badge-description">${badge.description}</div>
+                    <div class="badge-status">${badge.unlocked ? 'Unlocked' : 'Locked'}</div>
                 `;
                 
                 badgeList.appendChild(badgeEl);

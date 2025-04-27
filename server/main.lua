@@ -201,7 +201,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats', function()
     
     -- Prepare badges for client
     local badgesData = {}
-    for _, badge in ipairs(badges) do
+    for _, badge in ipairs(Config.Badges) do  -- Make sure you're using Config.Badges, not hardcoded badges
         local isUnlocked = false
         
         -- Check if badge is unlocked
