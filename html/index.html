@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bounty Hunter UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
+        }
+        
+        .container {
+            width: 800px;
+            max-height: 600px;
+            background-color: rgba(16, 16, 24, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: none;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: rgba(200, 30, 30, 0.9);
+            color: white;
+            border-bottom: 2px solid #333;
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header .icon {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .close-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: rgba(30, 30, 40, 0.95);
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            color: #a0a0a0;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        
+        .tab:hover {
+            color: white;
+            background-color: rgba(50, 50, 60, 0.9);
+        }
+        
+        .tab.active {
+            color: white;
+            background-color: rgba(200, 30, 30, 0.7);
+            border-bottom: 3px solid #c81e1e;
+        }
+        
+        .content {
+            max-height: 450px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .bounty-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .bounty-card {
+            background-color: rgba(30, 30, 40, 0.8);
+            border-radius: 5px;
+            padding: 15px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid #333;
+        }
+        
+        .bounty-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(200, 30, 30, 0.3);
+        }
+        
+        .bounty-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+        }
+        
+        .bounty-name {
+            color: white;
+            font-weight: 700;
+        }
+        
+        .bounty-reward {
+            color: #4CAF50;
+            font-weight: 700;
+        }
+        
+        .bounty-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+        
+        .bounty-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .bounty-detail span:first-child {
+            color: #ddd;
+            font-weight: 500;
+        }
+        
+        .accept-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 10px;
+            background-color: #c81e1e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        
+        .accept-btn:hover {
+            background-color: #a51a1a;
+        }
+        
+        .bounty-details-view {
+            background-color: rgba(30, 30, 40, 0.8);
+            border-radius: 5px;
+            padding: 20px;
+            color: white;
+        }
+        
+        .bounty-details-view h2 {
+            margin-bottom: 15px;
+            color: #c81e1e;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-label {
+            width: 150px;
+            font-weight: 500;
+            color: #ddd;
+        }
+        
+        .detail-value {
+            flex: 1;
+            color: #a0a0a0;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background-color: rgba(30, 30, 40, 0.8);
+            border-radius: 5px;
+            padding: 15px;
+            color: white;
+            border: 1px solid #333;
+        }
+        
+        .stat-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #ddd;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #c81e1e;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #c81e1e;
+            border-radius: 5px;
+        }
+        
+        .badge-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .badge {
+            background-color: rgba(30, 30, 40, 0.8);
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            border: 1px solid #333;
+        }
+        
+        .badge-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #888;
+        }
+        
+        .badge.unlocked .badge-icon {
+            color: #c81e1e;
+        }
+        
+        .badge-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .badge-description {
+            font-size: 12px;
+            color: #a0a0a0;
+        }
+        
+        .active-bounty {
+            background-color: rgba(30, 30, 40, 0.8);
+            border-radius: 5px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .active-bounty h2 {
+            color: #c81e1e;
+            margin-bottom: 15px;
+        }
+        
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-row button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        
+        .btn-row .cancel-btn {
+            background-color: #555;
+            color: white;
+        }
+        
+        .btn-row .cancel-btn:hover {
+            background-color: #444;
+        }
+        
+        .content-tab {
+            display: none;
+        }
+        
+        .content-tab.active {
+            display: block;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 30, 40, 0.8);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(200, 30, 30, 0.7);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(200, 30, 30, 0.9);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(200, 30, 30, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateX(200%);
+            transition: transform 0.5s;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="bountyBoard">
+        <div class="header">
+            <h1><span class="icon">🎯</span> Bounty Hunting Board</h1>
+            <button class="close-btn">&times;</button>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="available">Available Bounties</div>
+            <div class="tab" data-tab="active">Active Bounty</div>
+            <div class="tab" data-tab="stats">Stats & Progression</div>
+        </div>
+        
+        <div class="content">
+            <div class="content-tab active" id="available-tab">
+                <div class="bounty-list" id="bounty-list">
+                    <!-- Bounty cards will be dynamically added here -->
+                </div>
+            </div>
+            
+            <div class="content-tab" id="active-tab">
+                <div id="active-bounty-container">
+                    <!-- Active bounty will be shown here -->
+                </div>
+            </div>
+            
+            <div class="content-tab" id="stats-tab">
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Bounties Completed</div>
+                        <div class="stat-value" id="total-bounties">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Total Earnings</div>
+                        <div class="stat-value" id="total-earnings">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Current Rank</div>
+                        <div class="stat-value" id="current-rank">Rookie</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Reputation</div>
+                        <div class="stat-value" id="reputation-value">0/100</div>
+                        <div class="progress-bar">
+                            <div class="progress" id="reputation-progress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 style="margin: 20px 0 10px; color: white;">Achievements</h2>
+                <div class="badge-list" id="badge-list">
+                    <!-- Badges will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <!-- Notification messages will be added here -->
+    </div>
+
+    <script>
+        // Communication with Lua
+        window.addEventListener('message', function(event) {
+            var data = event.data;
+            
+            if (data.type === 'open') {
+                document.getElementById('bountyBoard').style.display = 'block';
+                if (data.bounties) {
+                    loadBounties(data.bounties);
+                }
+                if (data.activeBounty) {
+                    loadActiveBounty(data.activeBounty);
+                }
+                if (data.stats) {
+                    loadStats(data.stats);
+                }
+                if (data.badges) {
+                    loadBadges(data.badges);
+                }
+            } else if (data.type === 'close') {
+                document.getElementById('bountyBoard').style.display = 'none';
+            } else if (data.type === 'bountyAccepted') {
+                loadActiveBounty(data.bounty);
+                showNotification('Bounty accepted: ' + data.bounty.name);
+                // Switch to active tab
+                switchTab('active');
+            } else if (data.type === 'notification') {
+                showNotification(data.message);
+            } else if (data.type === 'updateStats') {
+                if (data.stats) {
+                    loadStats(data.stats);
+                }
+                if (data.badges) {
+                    loadBadges(data.badges);
+                }
+            }
+        });
+        
+        // Tab navigation
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+        
+        function switchTab(tabId) {
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update active content
+            document.querySelectorAll('.content-tab').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId + '-tab').classList.add('active');
+        }
+        
+        // Close button event
+        document.querySelector('.close-btn').addEventListener('click', function() {
+            document.getElementById('bountyBoard').style.display = 'none';
+            fetch('https://qb-bountyhunter/closeUI', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+        });
+        
+        // Load bounties
+        function loadBounties(bounties) {
+            const bountyList = document.getElementById('bounty-list');
+            bountyList.innerHTML = '';
+            
+            if (bounties.length === 0) {
+                bountyList.innerHTML = '<div style="grid-column: span 2; text-align: center; padding: 50px; color: #a0a0a0;">No bounties available at the moment.</div>';
+                return;
+            }
+            
+            bounties.forEach(bounty => {
+                const difficultyColor = bounty.difficulty === 'Easy' ? '#4CAF50' : 
+                                      bounty.difficulty === 'Medium' ? '#FFC107' : 
+                                      '#F44336';
+                
+                const card = document.createElement('div');
+                card.className = 'bounty-card';
+                card.innerHTML = `
+                    <div class="bounty-header">
+                        <div class="bounty-name">${bounty.name}</div>
+                        <div class="bounty-reward">$${bounty.reward}</div>
+                    </div>
+                    <div class="bounty-details">
+                        <div class="bounty-detail">
+                            <span>Difficulty:</span>
+                            <span style="color: ${difficultyColor}">${bounty.difficulty}</span>
+                        </div>
+                        <div class="bounty-detail">
+                            <span>Location:</span>
+                            <span>${bounty.area}</span>
+                        </div>
+                    </div>
+                    <button class="accept-btn" data-id="${bounty.id}">Accept Bounty</button>
+                `;
+                
+                bountyList.appendChild(card);
+            });
+            
+            // Add event listeners to accept buttons
+            document.querySelectorAll('.accept-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const bountyId = this.getAttribute('data-id');
+                    fetch('https://qb-bountyhunter/acceptBounty', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            bountyId: parseInt(bountyId)
+                        })
+                    });
+                });
+            });
+        }
+        
+        // Load active bounty
+        function loadActiveBounty(bounty) {
+            const container = document.getElementById('active-bounty-container');
+            
+            if (!bounty) {
+                container.innerHTML = '<div style="text-align: center; padding: 50px; color: #a0a0a0;">No active bounty.</div>';
+                return;
+            }
+            
+            const difficultyColor = bounty.difficulty === 'Easy' ? '#4CAF50' : 
+                                  bounty.difficulty === 'Medium' ? '#FFC107' : 
+                                  '#F44336';
+            
+            container.innerHTML = `
+                <div class="active-bounty">
+                    <h2>Active Bounty: ${bounty.name}</h2>
+                    <div class="detail-row">
+                        <div class="detail-label">Reward:</div>
+                        <div class="detail-value">$${bounty.reward}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Difficulty:</div>
+                        <div class="detail-value" style="color: ${difficultyColor}">${bounty.difficulty}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Location:</div>
+                        <div class="detail-value">${bounty.area}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Status:</div>
+                        <div class="detail-value" id="bounty-status">In Progress</div>
+                    </div>
+                    <div class="btn-row">
+                        <button class="cancel-btn" id="cancel-bounty">Cancel Bounty</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listener to cancel button
+            document.getElementById('cancel-bounty').addEventListener('click', function() {
+                fetch('https://qb-bountyhunter/cancelBounty', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+            });
+        }
+        
+        // Load stats
+        function loadStats(stats) {
+            document.getElementById('total-bounties').textContent = stats.totalBounties;
+            document.getElementById('total-earnings').textContent = '$' + stats.totalEarnings;
+            document.getElementById('current-rank').textContent = stats.rank;
+            
+            const reputationProgress = (stats.reputation % 100);
+            const reputationMax = 100;
+            document.getElementById('reputation-value').textContent = reputationProgress + '/' + reputationMax;
+            document.getElementById('reputation-progress').style.width = (reputationProgress / reputationMax * 100) + '%';
+        }
+        
+        // Load badges
+        function loadBadges(badges) {
+            const badgeList = document.getElementById('badge-list');
+            badgeList.innerHTML = '';
+            
+            badges.forEach(badge => {
+                const badgeEl = document.createElement('div');
+                badgeEl.className = 'badge ' + (badge.unlocked ? 'unlocked' : '');
+                badgeEl.innerHTML = `
+                    <div class="badge-icon">${badge.icon}</div>
+                    <div class="badge-title">${badge.title}</div>
+                    <div class="badge-description">${badge.description}</div>
+                `;
+                
+                badgeList.appendChild(badgeEl);
+            });
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
