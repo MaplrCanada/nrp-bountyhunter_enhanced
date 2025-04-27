@@ -49,7 +49,7 @@ CreateThread(function()
     while true do
         local sleep = 1000
         local playerCoords = GetEntityCoords(PlayerPedId())
-        local bountyBoardCoords = vector3(440.84, -981.14, 30.69) -- Mission Row PD location
+        local bountyBoardCoords = Config.BountyBoardLocation
         local dist = #(playerCoords - bountyBoardCoords)
         
         if dist < 10 then
@@ -225,8 +225,8 @@ function CreateTargetPed(bounty)
                 if DoesBlipExist(blip) then RemoveBlip(blip) end
                 if DoesBlipExist(targetBlip) then RemoveBlip(targetBlip) end
                 
-                -- Create marker for return
-                local returnCoords = vector3(440.84, -981.14, 30.69) -- Mission Row PD
+                -- Create marker for return - UPDATE THIS PART
+                local returnCoords = Config.PaymentLocation -- Use config value instead of hardcoded
                 local returnBlip = AddBlipForCoord(returnCoords.x, returnCoords.y, returnCoords.z)
                 SetBlipSprite(returnBlip, 162) -- Money sign
                 SetBlipColour(returnBlip, 2) -- Green
@@ -235,12 +235,12 @@ function CreateTargetPed(bounty)
                 AddTextComponentString("Return for Reward")
                 EndTextCommandSetBlipName(returnBlip)
                 
-                -- Create thread to monitor return to PD
+                -- Create thread to monitor return to PD - UPDATE THIS PART TOO
                 CreateThread(function()
                     while true do
                         local sleep = 1000
                         local playerPos = GetEntityCoords(PlayerPedId())
-                        local distance = #(playerPos - returnCoords)
+                        local distance = #(playerPos - returnCoords) -- Use updated coords
                         
                         if distance < 10.0 then
                             sleep = 0

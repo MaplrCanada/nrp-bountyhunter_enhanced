@@ -1,7 +1,10 @@
 Config = {}
 
 -- Bounty board location
-Config.BountyBoardLocation = vector3(440.84, -981.14, 30.69) -- Mission Row PD
+Config.BountyBoardLocation = vector3(444.66, -980.56, 30.69) -- Mission Row PD
+
+-- Payment location
+Config.PaymentLocation = vector3(440.84, -981.14, 30.69) -- Mission Row PD
 
 -- Configure how often bounties refresh (in minutes)
 Config.RefreshTime = 60
