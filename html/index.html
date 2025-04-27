@@ -484,7 +484,7 @@
         // Close button event
         document.querySelector('.close-btn').addEventListener('click', function() {
             document.getElementById('bountyBoard').style.display = 'none';
-            fetch('https://nrp-bounterhunter_enhanced/closeUI', {
+            fetch('https://nrp-bountyhunter_enhanced/closeUI', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -535,7 +535,7 @@
             document.querySelectorAll('.accept-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const bountyId = this.getAttribute('data-id');
-                    fetch('https://nrp-bounterhunter_enhanced/acceptBounty', {
+                    fetch('https://nrp-bountyhunter_enhanced/acceptBounty', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -588,7 +588,7 @@
             
             // Add event listener to cancel button
             document.getElementById('cancel-bounty').addEventListener('click', function() {
-                fetch('https://nrp-bounterhunter_enhanced/cancelBounty', {
+                fetch('https://nrp-bountyhunter_enhanced/cancelBounty', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
