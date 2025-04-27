@@ -19,33 +19,33 @@ local bountyLocations = {
 local bountyTargets = {
     {
         difficulty = "Easy",
-        models = {"a_m_m_hillbilly_01", "a_m_m_farmer_01", "a_m_m_rurmeth_01"},
-        weapons = {"WEAPON_PISTOL", "WEAPON_BAT", "WEAPON_KNIFE"},
-        health = 150,
-        armor = 0,
-        accuracy = 40,
-        reward = {min = 500, max = 1000},
-        reputation = 5
+        models = Config.Difficulties["Easy"].models,
+        weapons = Config.Difficulties["Easy"].weapons,
+        health = Config.Difficulties["Easy"].health,
+        armor = Config.Difficulties["Easy"].armor,
+        accuracy = Config.Difficulties["Easy"].accuracy,
+        reward = Config.Difficulties["Easy"].reward,
+        reputation = Config.Difficulties["Easy"].reputation
     },
     {
         difficulty = "Medium",
-        models = {"g_m_y_lost_01", "g_m_y_lost_02", "g_m_y_lost_03", "g_m_y_ballasout_01"},
-        weapons = {"WEAPON_PISTOL", "WEAPON_APPISTOL", "WEAPON_SAWNOFFSHOTGUN"},
-        health = 200,
-        armor = 50,
-        accuracy = 60,
-        reward = {min = 1000, max = 2000},
-        reputation = 10
+        models = Config.Difficulties["Medium"].models,
+        weapons = Config.Difficulties["Medium"].weapons,
+        health = Config.Difficulties["Medium"].health,
+        armor = Config.Difficulties["Medium"].armor,
+        accuracy = Config.Difficulties["Medium"].accuracy,
+        reward = Config.Difficulties["Medium"].reward,
+        reputation = Config.Difficulties["Medium"].reputation
     },
     {
         difficulty = "Hard",
-        models = {"g_m_y_salvaboss_01", "g_m_m_mexboss_01", "u_m_y_juggernaut_01"},
-        weapons = {"WEAPON_COMBATPISTOL", "WEAPON_SMG", "WEAPON_ASSAULTRIFLE"},
-        health = 300,
-        armor = 100,
-        accuracy = 80,
-        reward = {min = 2000, max = 3500},
-        reputation = 20
+        models = Config.Difficulties["Hard"].models,
+        weapons = Config.Difficulties["Hard"].weapons,
+        health = Config.Difficulties["Hard"].health,
+        armor = Config.Difficulties["Hard"].armor,
+        accuracy = Config.Difficulties["Hard"].accuracy,
+        reward = Config.Difficulties["Hard"].reward,
+        reputation = Config.Difficulties["Hard"].reputation
     }
 }
 
@@ -294,6 +294,9 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', function(bo
     
     -- Remove from active bounties
     activeBounties[bountyId] = nil
+
+    TriggerClientEvent('nrp-bounterhunter_enhanced:client:BountyFinished', src)
+    
     
     -- Calculate reward with rank bonus
     local metadata = Player.PlayerData.metadata
@@ -325,6 +328,8 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', function(bo
     
     -- Save updated stats
     Player.Functions.SetMetaData('bountystats', bountyStat)
+
+    print("Updated stats for " .. Player.PlayerData.name .. ": Total Bounties = " .. bountyStat.totalBounties .. ", Rep = " .. bountyStat.reputation)
     
     -- Check for rank up
     local newRankGrade = GetPlayerRank(bountyStat.reputation)

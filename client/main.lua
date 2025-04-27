@@ -149,6 +149,18 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:client:UpdatePlayerStats', function
     })
 end)
 
+RegisterNetEvent('nrp-bounterhunter_enhanced:client:BountyFinished', function()
+    activeBounty = nil
+    
+    -- Update UI if open
+    if isUiOpen then
+        SendNUIMessage({
+            type = 'open',
+            activeBounty = nil
+        })
+    end
+end)
+
 -- Create the target NPC for the bounty
 function CreateTargetPed(bounty)
     local coords = bounty.coords
