@@ -3,114 +3,16 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local availableBounties = {}
 local activeBounties = {}
-local bountyLocations = {
-    {area = "Sandy Shores", coords = vector3(1895.65, 3715.89, 32.75), heading = 215.0},
-    {area = "Grapeseed", coords = vector3(2548.57, 4668.98, 33.15), heading = 128.0},
-    {area = "Paleto Bay", coords = vector3(-15.29, 6293.21, 31.38), heading = 45.0},
-    {area = "Vinewood Hills", coords = vector3(-1546.35, 137.05, 55.65), heading = 300.0},
-    {area = "Vespucci Beach", coords = vector3(-1365.54, -1159.15, 4.12), heading = 90.0},
-    {area = "El Burro Heights", coords = vector3(1365.87, -2088.76, 52.0), heading = 180.0},
-    {area = "Harmony", coords = vector3(585.27, 2788.53, 42.13), heading = 2.0},
-    {area = "Great Chaparral", coords = vector3(-386.12, 2587.32, 90.13), heading = 270.0},
-    {area = "Davis", coords = vector3(97.59, -1927.71, 20.8), heading = 320.0},
-    {area = "Mirror Park", coords = vector3(1151.34, -645.02, 57.39), heading = 75.0}
-}
 
-local bountyTargets = {
-    {
-        difficulty = "Easy",
-        models = Config.Difficulties["Easy"].models,
-        weapons = Config.Difficulties["Easy"].weapons,
-        health = Config.Difficulties["Easy"].health,
-        armor = Config.Difficulties["Easy"].armor,
-        accuracy = Config.Difficulties["Easy"].accuracy,
-        reward = Config.Difficulties["Easy"].reward,
-        reputation = Config.Difficulties["Easy"].reputation
-    },
-    {
-        difficulty = "Medium",
-        models = Config.Difficulties["Medium"].models,
-        weapons = Config.Difficulties["Medium"].weapons,
-        health = Config.Difficulties["Medium"].health,
-        armor = Config.Difficulties["Medium"].armor,
-        accuracy = Config.Difficulties["Medium"].accuracy,
-        reward = Config.Difficulties["Medium"].reward,
-        reputation = Config.Difficulties["Medium"].reputation
-    },
-    {
-        difficulty = "Hard",
-        models = Config.Difficulties["Hard"].models,
-        weapons = Config.Difficulties["Hard"].weapons,
-        health = Config.Difficulties["Hard"].health,
-        armor = Config.Difficulties["Hard"].armor,
-        accuracy = Config.Difficulties["Hard"].accuracy,
-        reward = Config.Difficulties["Hard"].reward,
-        reputation = Config.Difficulties["Hard"].reputation
-    }
-}
-
--- Progression system - Ranks and rewards
-local ranks = {
-    [0] = {name = "Rookie", requiredRep = 0, payment = 50},
-    [1] = {name = "Tracker", requiredRep = 100, payment = 75},
-    [2] = {name = "Hunter", requiredRep = 300, payment = 100},
-    [3] = {name = "Veteran Hunter", requiredRep = 600, payment = 150},
-    [4] = {name = "Master Hunter", requiredRep = 1000, payment = 200}
-}
-
--- Achievement badges
-local badges = {
-    {
-        id = "first_blood",
-        icon = "🎯",
-        title = "First Blood",
-        description = "Complete your first bounty",
-        requiredBounties = 1
-    },
-    {
-        id = "silver_hunter",
-        icon = "🥈",
-        title = "Silver Hunter",
-        description = "Complete 10 bounties",
-        requiredBounties = 10
-    },
-    {
-        id = "gold_hunter",
-        icon = "🥇",
-        title = "Gold Hunter",
-        description = "Complete 25 bounties",
-        requiredBounties = 25
-    },
-    {
-        id = "high_roller",
-        icon = "💰",
-        title = "High Roller",
-        description = "Earn $25,000 in bounties",
-        requiredEarnings = 25000
-    },
-    {
-        id = "professional",
-        icon = "👑",
-        title = "Professional",
-        description = "Reach Master Hunter rank",
-        requiredRank = 4
-    },
-    {
-        id = "challenge_seeker",
-        icon = "🔥",
-        title = "Challenge Seeker",
-        description = "Complete 10 hard bounties",
-        requiredHardBounties = 10
-    }
-}
-
--- Generate new bounties every hour
+-- Generate new bounties
 function GenerateBounties()
     availableBounties = {}
     
     for i = 1, math.random(3, 6) do
-        local targetType = bountyTargets[math.random(1, #bountyTargets)]
-        local location = bountyLocations[math.random(1, #bountyLocations)]
+        local difficultyTypes = {"Easy", "Medium", "Hard"}
+        local difficultyType = difficultyTypes[math.random(1, #difficultyTypes)]
+        local targetType = Config.Difficulties[difficultyType]
+        local location = Config.Locations[math.random(1, #Config.Locations)]
         local model = targetType.models[math.random(1, #targetType.models)]
         local weapon = targetType.weapons[math.random(1, #targetType.weapons)]
         local reward = math.random(targetType.reward.min, targetType.reward.max)
@@ -129,7 +31,7 @@ function GenerateBounties()
             id = i,
             name = name,
             model = GetHashKey(model),
-            difficulty = targetType.difficulty,
+            difficulty = difficultyType,
             area = location.area,
             coords = coords,
             heading = location.heading,
@@ -148,19 +50,22 @@ AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
     GenerateBounties()
     
-    -- Schedule bounty refresh every hour
-    SetTimeout(3600000, RecurringBountyGeneration)
+    -- Schedule bounty refresh based on config
+    local refreshTimeMs = Config.RefreshTime * 60 * 1000
+    SetTimeout(refreshTimeMs, RecurringBountyGeneration)
 end)
 
 function RecurringBountyGeneration()
     GenerateBounties()
-    SetTimeout(3600000, RecurringBountyGeneration)
+    -- Use config refresh time
+    local refreshTimeMs = Config.RefreshTime * 60 * 1000
+    SetTimeout(refreshTimeMs, RecurringBountyGeneration)
 end
 
 -- Get player's current rank
 function GetPlayerRank(reputation)
     local highestRank = 0
-    for grade, rankData in pairs(ranks) do
+    for grade, rankData in pairs(Config.Ranks) do
         if reputation >= rankData.requiredRep and grade > highestRank then
             highestRank = grade
         end
@@ -189,7 +94,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats', function()
     
     -- Get current rank
     local rankGrade = GetPlayerRank(bountyStat.reputation)
-    local rankName = ranks[rankGrade].name
+    local rankName = Config.Ranks[rankGrade].name
     
     -- Prepare stats for client
     local statsData = {
@@ -201,7 +106,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats', function()
     
     -- Prepare badges for client
     local badgesData = {}
-    for _, badge in ipairs(Config.Badges) do  -- Make sure you're using Config.Badges, not hardcoded badges
+    for _, badge in ipairs(Config.Badges) do
         local isUnlocked = false
         
         -- Check if badge is unlocked
@@ -326,7 +231,6 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', function(bo
 
     TriggerClientEvent('nrp-bounterhunter_enhanced:client:BountyFinished', src)
     
-    
     -- Calculate reward with rank bonus
     local metadata = Player.PlayerData.metadata
     local bountyStat = metadata.bountystats or {
@@ -338,7 +242,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', function(bo
     }
     
     local rankGrade = GetPlayerRank(bountyStat.reputation)
-    local rankBonus = ranks[rankGrade].payment / 100 -- Convert percentage to multiplier
+    local rankBonus = Config.Ranks[rankGrade].payment / 100 -- Convert percentage to multiplier
     local finalReward = math.floor(bounty.reward * (1 + rankBonus))
     
     -- Add payment
@@ -363,7 +267,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', function(bo
     -- Check for rank up
     local newRankGrade = GetPlayerRank(bountyStat.reputation)
     if newRankGrade > rankGrade then
-        local newRank = ranks[newRankGrade]
+        local newRank = Config.Ranks[newRankGrade]
         TriggerClientEvent('QBCore:Notify', src, "Rank Up! You are now a " .. newRank.name, "success")
         
         -- Set job grade if needed

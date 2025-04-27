@@ -44,7 +44,7 @@ RegisterNUICallback('cancelBounty', function(data, cb)
     cb('ok')
 end)
 
--- Create bounty board at Mission Row PD
+-- Create bounty board at configured location
 CreateThread(function()
     while true do
         local sleep = 1000
@@ -225,8 +225,8 @@ function CreateTargetPed(bounty)
                 if DoesBlipExist(blip) then RemoveBlip(blip) end
                 if DoesBlipExist(targetBlip) then RemoveBlip(targetBlip) end
                 
-                -- Create marker for return - UPDATE THIS PART
-                local returnCoords = Config.PaymentLocation -- Use config value instead of hardcoded
+                -- Create marker for return using config
+                local returnCoords = Config.PaymentLocation
                 local returnBlip = AddBlipForCoord(returnCoords.x, returnCoords.y, returnCoords.z)
                 SetBlipSprite(returnBlip, 162) -- Money sign
                 SetBlipColour(returnBlip, 2) -- Green
@@ -235,12 +235,12 @@ function CreateTargetPed(bounty)
                 AddTextComponentString("Return for Reward")
                 EndTextCommandSetBlipName(returnBlip)
                 
-                -- Create thread to monitor return to PD - UPDATE THIS PART TOO
+                -- Create thread to monitor return to payment location
                 CreateThread(function()
                     while true do
                         local sleep = 1000
                         local playerPos = GetEntityCoords(PlayerPedId())
-                        local distance = #(playerPos - returnCoords) -- Use updated coords
+                        local distance = #(playerPos - returnCoords)
                         
                         if distance < 10.0 then
                             sleep = 0
