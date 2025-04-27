@@ -454,6 +454,11 @@
                 if (data.badges) {
                     loadBadges(data.badges);
                 }
+            } else if (data.type === 'bountyCompleted') {
+                // Clear active bounty
+                loadActiveBounty(null);
+                const container = document.getElementById('active-bounty-container');
+                container.innerHTML = '<div style="text-align: center; padding: 50px; color: #a0a0a0;">No active bounty.</div>';
             }
         });
         

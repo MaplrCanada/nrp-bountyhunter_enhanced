@@ -152,7 +152,12 @@ end)
 RegisterNetEvent('nrp-bounterhunter_enhanced:client:BountyFinished', function()
     activeBounty = nil
     
-    -- Update UI if open
+    -- Make sure UI gets updated
+    SendNUIMessage({
+        type = 'bountyCompleted'  -- New message type
+    })
+    
+    -- Also update if UI is open
     if isUiOpen then
         SendNUIMessage({
             type = 'open',
@@ -277,7 +282,12 @@ function CancelActiveBounty()
         activeBounty = nil
         QBCore.Functions.Notify("You've canceled your active bounty.", "info")
         
-        -- Update UI if open
+        -- Always send NUI message to clear active bounty
+        SendNUIMessage({
+            type = 'bountyCompleted'  -- Use same message type for consistency
+        })
+        
+        -- Also update if UI is open
         if isUiOpen then
             SendNUIMessage({
                 type = 'open',
