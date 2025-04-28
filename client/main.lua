@@ -1,4 +1,4 @@
--- nrp-bounterhunter_enhanced/client/main.lua
+-- ss-bountyhunter_enhanced/client/main.lua
 
 local QBCore = exports['qb-core']:GetCoreObject()
 local PlayerData = {}
@@ -14,7 +14,7 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     
     -- Load player's bounty hunter stats
     if PlayerData.job and PlayerData.job.name == 'bountyhunter' then
-        TriggerServerEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats')
+        TriggerServerEvent('ss-bountyhunter_enhanced:server:GetPlayerStats')
     end
 end)
 
@@ -23,7 +23,7 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
     
     -- Load player's bounty hunter stats when they switch to bounty hunter job
     if PlayerData.job and PlayerData.job.name == 'bountyhunter' then
-        TriggerServerEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats')
+        TriggerServerEvent('ss-bountyhunter_enhanced:server:GetPlayerStats')
     end
 end)
 
@@ -35,7 +35,7 @@ RegisterNUICallback('closeUI', function(data, cb)
 end)
 
 RegisterNUICallback('acceptBounty', function(data, cb)
-    TriggerServerEvent('nrp-bounterhunter_enhanced:server:AcceptBounty', data.bountyId)
+    TriggerServerEvent('ss-bountyhunter_enhanced:server:AcceptBounty', data.bountyId)
     cb('ok')
 end)
 
@@ -93,8 +93,8 @@ end
 function OpenBountyBoard()
     if isUiOpen then return end
     
-    TriggerServerEvent('nrp-bounterhunter_enhanced:server:GetAvailableBounties')
-    TriggerServerEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats')
+    TriggerServerEvent('ss-bountyhunter_enhanced:server:GetAvailableBounties')
+    TriggerServerEvent('ss-bountyhunter_enhanced:server:GetPlayerStats')
     
     isUiOpen = true
     SetNuiFocus(true, true)
@@ -106,7 +106,7 @@ function OpenBountyBoard()
 end
 
 -- Accept a bounty
-RegisterNetEvent('nrp-bounterhunter_enhanced:client:BountyAccepted', function(bounty)
+RegisterNetEvent('ss-bountyhunter_enhanced:client:BountyAccepted', function(bounty)
     if activeBounty then
         QBCore.Functions.Notify("You already have an active bounty! Complete it or cancel it first.", "error")
         return
@@ -132,7 +132,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:client:BountyAccepted', function(bo
 end)
 
 -- Display available bounties
-RegisterNetEvent('nrp-bounterhunter_enhanced:client:ShowAvailableBounties', function(bounties)
+RegisterNetEvent('ss-bountyhunter_enhanced:client:ShowAvailableBounties', function(bounties)
     SendNUIMessage({
         type = 'open',
         bounties = bounties,
@@ -141,7 +141,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:client:ShowAvailableBounties', func
 end)
 
 -- Update player stats
-RegisterNetEvent('nrp-bounterhunter_enhanced:client:UpdatePlayerStats', function(stats, badges)
+RegisterNetEvent('ss-bountyhunter_enhanced:client:UpdatePlayerStats', function(stats, badges)
     SendNUIMessage({
         type = 'updateStats',
         stats = stats,
@@ -149,7 +149,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:client:UpdatePlayerStats', function
     })
 end)
 
-RegisterNetEvent('nrp-bounterhunter_enhanced:client:BountyFinished', function()
+RegisterNetEvent('ss-bountyhunter_enhanced:client:BountyFinished', function()
     activeBounty = nil
     
     -- Make sure UI gets updated
@@ -250,7 +250,7 @@ function CreateTargetPed(bounty)
                                 DrawText3D(returnCoords.x, returnCoords.y, returnCoords.z + 0.2, "~g~E~w~ - Collect Bounty Reward")
                                 
                                 if IsControlJustPressed(0, 38) then -- E key
-                                    TriggerServerEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', activeBounty.id)
+                                    TriggerServerEvent('ss-bountyhunter_enhanced:server:CompleteBounty', activeBounty.id)
                                     activeBounty = nil
                                     RemoveBlip(returnBlip)
                                     break
@@ -280,7 +280,7 @@ function CancelActiveBounty()
         end
         
         -- Trigger the server event to properly clean up the server-side state
-        TriggerServerEvent('nrp-bounterhunter_enhanced:server:CancelBounty')
+        TriggerServerEvent('ss-bountyhunter_enhanced:server:CancelBounty')
         
         -- Local cleanup
         activeBounty = nil

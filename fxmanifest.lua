@@ -1,7 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'QBCore Bounty Hunter Job'
+description 'SyntaxScripts - Bounty Hunter'
+author 'SyntaxScripts'
 version '1.0.0'
 
 ui_page 'html/index.html'

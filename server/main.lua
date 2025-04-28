@@ -1,4 +1,4 @@
--- nrp-bounterhunter_enhanced/server/main.lua
+-- ss-bountyhunter_enhanced/server/main.lua
 
 local QBCore = exports['qb-core']:GetCoreObject()
 local availableBounties = {}
@@ -74,7 +74,7 @@ function GetPlayerRank(reputation)
 end
 
 -- Get player stats
-RegisterNetEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats', function()
+RegisterNetEvent('ss-bountyhunter_enhanced:server:GetPlayerStats', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     
@@ -141,11 +141,11 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats', function()
     end
     
     -- Send stats and badges to client
-    TriggerClientEvent('nrp-bounterhunter_enhanced:client:UpdatePlayerStats', src, statsData, badgesData)
+    TriggerClientEvent('ss-bountyhunter_enhanced:client:UpdatePlayerStats', src, statsData, badgesData)
 end)
 
 -- Cancel bounty
-RegisterNetEvent('nrp-bounterhunter_enhanced:server:CancelBounty', function()
+RegisterNetEvent('ss-bountyhunter_enhanced:server:CancelBounty', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     
@@ -167,20 +167,20 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:CancelBounty', function()
         -- Remove from active bounties
         activeBounties[bountyId] = nil
         TriggerClientEvent('QBCore:Notify', src, "Your bounty has been canceled.", "info")
-        TriggerClientEvent('nrp-bounterhunter_enhanced:client:BountyFinished', src)
+        TriggerClientEvent('ss-bountyhunter_enhanced:client:BountyFinished', src)
     else
         TriggerClientEvent('QBCore:Notify', src, "You don't have an active bounty to cancel.", "error")
     end
 end)
 
 -- Get available bounties
-RegisterNetEvent('nrp-bounterhunter_enhanced:server:GetAvailableBounties', function()
+RegisterNetEvent('ss-bountyhunter_enhanced:server:GetAvailableBounties', function()
     local src = source
-    TriggerClientEvent('nrp-bounterhunter_enhanced:client:ShowAvailableBounties', src, availableBounties)
+    TriggerClientEvent('ss-bountyhunter_enhanced:client:ShowAvailableBounties', src, availableBounties)
 end)
 
 -- Accept a bounty
-RegisterNetEvent('nrp-bounterhunter_enhanced:server:AcceptBounty', function(bountyId)
+RegisterNetEvent('ss-bountyhunter_enhanced:server:AcceptBounty', function(bountyId)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     
@@ -204,14 +204,14 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:AcceptBounty', function(boun
             table.remove(availableBounties, i)
             
             -- Send to client
-            TriggerClientEvent('nrp-bounterhunter_enhanced:client:BountyAccepted', src, bounty)
+            TriggerClientEvent('ss-bountyhunter_enhanced:client:BountyAccepted', src, bounty)
             break
         end
     end
 end)
 
 -- Complete a bounty
-RegisterNetEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', function(bountyId)
+RegisterNetEvent('ss-bountyhunter_enhanced:server:CompleteBounty', function(bountyId)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     
@@ -229,7 +229,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', function(bo
     -- Remove from active bounties
     activeBounties[bountyId] = nil
 
-    TriggerClientEvent('nrp-bounterhunter_enhanced:client:BountyFinished', src)
+    TriggerClientEvent('ss-bountyhunter_enhanced:client:BountyFinished', src)
     
     -- Calculate reward with rank bonus
     local metadata = Player.PlayerData.metadata
@@ -277,7 +277,7 @@ RegisterNetEvent('nrp-bounterhunter_enhanced:server:CompleteBounty', function(bo
     end
     
     -- Update client stats
-    TriggerEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats', src)
+    TriggerEvent('ss-bountyhunter_enhanced:server:GetPlayerStats', src)
 end)
 
 -- Add some commands for admin control
@@ -308,7 +308,7 @@ QBCore.Commands.Add('resetbountystats', 'Reset your bounty hunter stats (Admin O
         }
         Player.Functions.SetMetaData('bountystats', resetStats)
         TriggerClientEvent('QBCore:Notify', src, "Bounty hunter stats have been reset!", "success")
-        TriggerEvent('nrp-bounterhunter_enhanced:server:GetPlayerStats', src)
+        TriggerEvent('ss-bountyhunter_enhanced:server:GetPlayerStats', src)
     else
         TriggerClientEvent('QBCore:Notify', src, "You don't have permission to do this.", "error")
     end
