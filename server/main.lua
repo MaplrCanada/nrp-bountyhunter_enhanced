@@ -50,7 +50,7 @@ AddEventHandler('onResourceStart', function(resourceName)
     end
     
     -- If validation successful, continue with script initialization
-    print("^2" .. Config.ScriptName .. " validated and started successfully!^7")
+    print("^2SyntaxScripts Bounty Hunter validated and started successfully!^7")
     GenerateBounties()
     
     -- Schedule bounty refresh based on config
