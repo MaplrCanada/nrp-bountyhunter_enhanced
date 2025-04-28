@@ -1,5 +1,7 @@
 Config = {}
 
+Config.APIKey = "111" -- Replace with your actual API key.
+
 -- Bounty board location
 Config.BountyBoardLocation = vector3(444.66, -980.56, 30.69) -- Mission Row PD
 

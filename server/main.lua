@@ -4,6 +4,60 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local availableBounties = {}
 local activeBounties = {}
 
+function ValidateAPIKey()
+    local isValid = false
+    local validationComplete = false
+    
+    -- Construct the API URL with parameters
+    local apiUrl = "https://test.maplr.ca/syntaxscripts/api.php?script=ss-bountyhunter_enhanced&apikey=" .. Config.APIKey
+
+    
+    -- Make HTTP request to validate the API key
+    PerformHttpRequest(apiUrl, function(statusCode, responseText, headers)
+        if statusCode == 200 then
+            local response = json.decode(responseText)
+            if response and response.status == "success" then
+                isValid = true
+                print("[" .. Config.ScriptName .. "] API key validation successful!")
+            else
+                print("[" .. Config.ScriptName .. "] API key validation failed: " .. (response and response.message or "Unknown error"))
+            end
+        else
+            print("[" .. Config.ScriptName .. "] API key validation failed. Status code: " .. statusCode)
+        end
+        validationComplete = true
+    end, "GET")
+    
+    -- Wait for validation to complete (simple synchronous approach for startup)
+    local timeout = 0
+    while not validationComplete and timeout < 100 do
+        Wait(100)
+        timeout = timeout + 1
+    end
+    
+    return isValid
+end
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if (GetCurrentResourceName() ~= resourceName) then return end
+    
+    -- Validate API key before initializing the script
+    if not ValidateAPIKey() then
+        print("\n^1[ERROR] " .. Config.ScriptName .. " failed to validate API key. Script will not work.^7")
+        print("^3Please make sure you have a valid API key in your config.lua file.^7")
+        print("^3You can purchase a license at https://test.maplr.ca/syntaxscripts^7\n")
+        return
+    end
+    
+    -- If validation successful, continue with script initialization
+    print("^2" .. Config.ScriptName .. " validated and started successfully!^7")
+    GenerateBounties()
+    
+    -- Schedule bounty refresh based on config
+    local refreshTimeMs = Config.RefreshTime * 60 * 1000
+    SetTimeout(refreshTimeMs, RecurringBountyGeneration)
+end)
+
 -- Generate new bounties
 function GenerateBounties()
     availableBounties = {}
