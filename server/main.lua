@@ -18,12 +18,12 @@ function ValidateAPIKey()
             local response = json.decode(responseText)
             if response and response.status == "success" then
                 isValid = true
-                print("[" .. Config.ScriptName .. "] API key validation successful!")
+                print("[SyntaxScripts] Bounty Hunter API key validation successful!")
             else
-                print("[" .. Config.ScriptName .. "] API key validation failed: " .. (response and response.message or "Unknown error"))
+                print("[SyntaxScripts] Bounty Hunter API key validation failed: " .. (response and response.message or "Unknown error"))
             end
         else
-            print("[" .. Config.ScriptName .. "] API key validation failed. Status code: " .. statusCode)
+            print("[SyntaxScripts] Bounty Hunter API key validation failed. Status code: " .. statusCode)
         end
         validationComplete = true
     end, "GET")
@@ -43,7 +43,7 @@ AddEventHandler('onResourceStart', function(resourceName)
     
     -- Validate API key before initializing the script
     if not ValidateAPIKey() then
-        print("\n^1[ERROR] " .. Config.ScriptName .. " failed to validate API key. Script will not work.^7")
+        print("\n^1[ERROR] Bounty Hunter failed to validate API key. Script will not work.^7")
         print("^3Please make sure you have a valid API key in your config.lua file.^7")
         print("^3You can purchase a license at https://test.maplr.ca/syntaxscripts^7\n")
         return
