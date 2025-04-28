@@ -51,10 +51,10 @@ AddEventHandler('onResourceStart', function(resourceName)
     
     -- If validation successful, continue with script initialization
     print("^2SyntaxScripts Bounty Hunter validated and started successfully!^7")
-    print("^3You can now use the bounty hunter features in your server.^7")
-    print("^3For support, visit https://test.maplr.ca/syntaxscripts^7")
-    print("^3Make sure to check the config.lua for customization options.^7")
-    print("^3Enjoy your bounty hunting experience!^7")
+    print("^2You can now use the bounty hunter features in your server.^7")
+    print("^2For support, visit https://test.maplr.ca/syntaxscripts^7")
+    print("^2Make sure to check the config.lua for customization options.^7")
+    print("^2Enjoy your bounty hunting experience!^7")
     GenerateBounties()
     
     -- Schedule bounty refresh based on config
