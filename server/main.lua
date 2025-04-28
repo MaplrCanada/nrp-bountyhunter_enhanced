@@ -9,7 +9,7 @@ function ValidateAPIKey()
     local validationComplete = false
     
     -- Construct the API URL with parameters
-    local apiUrl = "https://test.maplr.ca/syntaxscripts/api.php?script=ss-bountyhunter_enhanced&apikey=" .. Config.APIKey
+    local apiUrl = "https://test.maplr.ca/syntaxscripts/api.php?apikey=" .. Config.APIKey
 
     
     -- Make HTTP request to validate the API key
